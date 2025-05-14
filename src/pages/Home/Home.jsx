@@ -87,7 +87,6 @@ const Home = () => {
         const res = await addOrder(payload).unwrap();
 
         if (res?.success) {
-          console.log(res);
           const winner = res?.winner;
           const winner_aplus = res?.winner_aplus;
           const winner_bplus = res?.winner_bplus;
@@ -232,6 +231,7 @@ const Home = () => {
     }, 300);
   };
 
+  console.log(showTotalWinAmount);
   return (
     <main className="flex flex-col items-center lg:h-screen bg-zinc-800">
       <div className="react-joyride" />
