@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.border-purple {
+  border-color: rgb(0, 184, 231);
+}
+.text-purple {
+  color: rgb(0, 184, 231);
+}
