@@ -66,10 +66,11 @@ const Home = () => {
   });
 
   const handleClick = (shuffle) => {
-    setLoading(true);
+    if (!shuffle) {
+      setLoading(true);
+    }
     setIsAnimationEnd(false);
     setShowCardAnimation(true);
-
     setWinCard(initialWinCardState);
 
     const filterPlacedBet = Object.values(stakeState).filter((bet) => bet.show);
@@ -82,7 +83,7 @@ const Home = () => {
       stake: bet?.stake,
     }));
 
-    if (payload?.length > 0) {
+    if (payload?.length > 0 && !shuffle) {
       const handleOrder = async () => {
         const res = await addOrder(payload).unwrap();
 
@@ -93,13 +94,19 @@ const Home = () => {
           const card_a = res?.card_a;
           const card_b = res?.card_b;
 
-          const calculateWin = calculateTotalWin(winner, winner_aplus, payload);
+          const calculateWin = calculateTotalWin(
+            winner,
+            winner_aplus,
+            winner_bplus,
+            payload
+          );
+
           setTimeout(() => {
             setTimeout(() => {
               if (calculateWin > 0) {
                 playWinSound();
               }
-            }, 1000);
+            }, 3000);
             setWinCard({
               winner,
               winner_aplus,
@@ -122,7 +129,7 @@ const Home = () => {
     const isAllCardValueOne = Object.values(styleIndex).map((val) => val === 1);
     if (isAllCardValueOne) {
       playCardBackSound();
-      setShowCard(true);
+      // setShowCard(true);
       setTimeout(() => {
         setShowCard(false);
       }, 200);
@@ -231,7 +238,6 @@ const Home = () => {
     }, 300);
   };
 
-  console.log(showTotalWinAmount);
   return (
     <main className="flex flex-col items-center lg:h-screen bg-zinc-800">
       <div className="react-joyride" />

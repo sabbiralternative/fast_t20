@@ -1,31 +1,46 @@
-export const calculateTotalWin = (card_dragon, card_tiger, payload) => {
+import { Winner } from "../const";
+
+const ABPLUS = [
+  { key: "WINNER", amount: 1.98 },
+  { key: "COLOR", amount: 5 },
+  { key: "TRIO", amount: 26 },
+  { key: "PAIR", amount: 2 },
+  { key: "STRAIGHT", amount: 7 },
+  { key: "STRAIGHTFLUSH", amount: 36 },
+];
+
+export const calculateTotalWin = (
+  winner,
+  winner_aplus,
+  winner_bplus,
+  payload
+) => {
   let totalWin = 0;
 
-  if (
-    card_dragon?.rank_number === card_tiger?.rank_number &&
-    card_dragon?.suit === card_dragon?.suit
-  ) {
-    const suitedTie = payload?.find((p) => p.runner_name === "SuitedTie");
-    if (suitedTie) {
-      totalWin += suitedTie?.price * suitedTie?.stake;
+  if (winner === Winner.A) {
+    const a = payload?.find((p) => p.runner_name === "A");
+    if (a) {
+      totalWin += a?.price * a?.stake;
     }
-  } else if (
-    card_dragon?.rank_number === card_tiger?.rank_number &&
-    card_dragon?.suit !== card_dragon?.suit
-  ) {
-    const tie = payload?.find((p) => p.runner_name === "Tie");
-    if (tie) {
-      totalWin += tie?.price * tie?.stake;
+  }
+  if (winner === Winner.B) {
+    const b = payload?.find((p) => p.runner_name === "B");
+    if (b) {
+      totalWin += b?.price * b?.stake;
     }
-  } else if (card_dragon?.rank_number > card_tiger?.rank_number) {
-    const dragon = payload?.find((p) => p.runner_name === "Dragon");
-    if (dragon) {
-      totalWin += dragon?.price * dragon?.stake;
+  }
+  if (winner_aplus) {
+    const findAPlusPrice = ABPLUS?.find((a) => a.key === winner_aplus);
+    const aPlus = payload?.find((p) => p.runner_name === "APLUS");
+    if (findAPlusPrice && aPlus) {
+      totalWin += findAPlusPrice?.amount * aPlus?.stake;
     }
-  } else if (card_dragon?.rank_number < card_tiger?.rank_number) {
-    const tiger = payload?.find((p) => p.runner_name === "Tiger");
-    if (tiger) {
-      totalWin += tiger?.price * tiger?.stake;
+  }
+  if (winner_bplus) {
+    const findBPlusPrice = ABPLUS?.find((a) => a.key === winner_bplus);
+    const bPlus = payload?.find((p) => p.runner_name === "BPLUS");
+    if (findBPlusPrice && bPlus) {
+      totalWin += findBPlusPrice?.amount * bPlus?.stake;
     }
   }
 
