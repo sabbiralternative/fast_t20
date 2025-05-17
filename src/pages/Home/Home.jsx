@@ -19,8 +19,11 @@ import { handleUndoStake } from "../../utils/handleUndoStake";
 import { handleDoubleStake } from "../../utils/handleDoubleStake";
 
 const Home = () => {
+  const [shuffle, setShuffle] = useState(false);
+  const [clear, setClear] = useState(false);
+  const [isBetFast, setIsBetFast] = useState(false);
   const [addOrder] = useOrderMutation();
-  const [showCardAnimation, setShowCardAnimation] = useState(false);
+
   const initialStyleIndex = {
     playerOneFirstCard: 0,
     playerTwoFirstCard: 0,
@@ -57,6 +60,11 @@ const Home = () => {
     BPLUS: { show: false, stake },
   };
   const [stakeState, setStakeState] = useState(initialState);
+  const isPlaceStake = Object.values(stakeState).find((item) => item?.show);
+
+  const isRepeatTheBet = Object.values(stakeState).find(
+    (item) => item?.runner_name && item?.show === false
+  );
 
   let totalPlaceBet = 0;
   Object.values(stakeState).forEach((item) => {
@@ -65,15 +73,12 @@ const Home = () => {
     }
   });
 
-  const handleClick = (shuffle) => {
-    if (!shuffle) {
-      setLoading(true);
-      setIsAnimationEnd(false);
-    }
-    setShowCardAnimation(true);
-    setWinCard(initialWinCardState);
+  const handleClick = () => {
+    setLoading(true);
+    setIsAnimationEnd(false);
 
     const filterPlacedBet = Object.values(stakeState).filter((bet) => bet.show);
+
     let payload = filterPlacedBet.map((bet) => ({
       eventId: bet?.eventId,
       eventName: bet?.eventName,
@@ -82,49 +87,38 @@ const Home = () => {
       runner_name: bet?.runner_name,
       stake: bet?.stake,
     }));
-
-    if (payload?.length > 0 && !shuffle) {
-      const handleOrder = async () => {
-        const res = await addOrder(payload).unwrap();
-
-        if (res?.success) {
-          const winner = res?.winner;
-          const winner_aplus = res?.winner_aplus;
-          const winner_bplus = res?.winner_bplus;
-          const card_a = res?.card_a;
-          const card_b = res?.card_b;
-
-          const calculateWin = calculateTotalWin(
-            winner,
-            winner_aplus,
-            winner_bplus,
-            payload
-          );
-
-          setTimeout(() => {
-            setTimeout(() => {
-              if (calculateWin > 0) {
-                playWinSound();
-              }
-            }, 3000);
-            setWinCard({
-              winner,
-              winner_aplus,
-              winner_bplus,
-              card_a,
-              card_b,
-            });
-            setShowTotalWinAmount(true);
-            setTotalWinAmount(calculateWin);
-            setMultiplier((calculateWin / totalPlaceBet).toFixed(2));
-            payload = [];
-          }, 2000);
-        } else {
-          toast.success(res?.error?.description[0]?.message);
-        }
-      };
-      handleOrder();
+    const isAllCardValueOne = Object.values(styleIndex).map((val) => val === 1);
+    if (isAllCardValueOne) {
+      playCardBackSound();
+      setStyleIndex(initialStyleIndex);
+      if (!isBetFast) {
+        setTimeout(() => {
+          setShowCard(false);
+        }, 200);
+      }
     }
+
+    if (payload?.length > 0) {
+      handleOrder(payload);
+    }
+
+    if (!isBetFast) {
+      let steps = 0;
+      const totalSteps = 6;
+
+      const interval = setInterval(() => {
+        if (steps <= totalSteps) {
+          updateCards(steps);
+          steps++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 300);
+    }
+  };
+
+  const handleShuffle = () => {
+    setShuffle(true);
 
     const isAllCardValueOne = Object.values(styleIndex).map((val) => val === 1);
     if (isAllCardValueOne) {
@@ -140,58 +134,111 @@ const Home = () => {
     let steps = 0;
     const totalSteps = 6;
 
-    const updateCards = (step) => {
-      if (step === 2) {
-        playShuffleSound();
-      }
-
-      if (step === 6) {
-        if (!shuffle) {
-          playCardSound();
-        }
-        setTimeout(() => {
-          if (!shuffle) {
-            setIsAnimationEnd(true);
-          }
-          setLoading(false);
-        }, 3000);
-        setCards(fiftyTwoCard);
-
-        if (!shuffle) {
-          setTimeout(() => {
-            setShowCard(true);
-          }, 100);
-        }
-      } else {
-        const newCards = cards.map((card, i) => {
-          return {
-            ...card,
-            right: changeCardsProperty[i + 1][step]?.right,
-            translateZ: changeCardsProperty[i + 1][step]?.translateZ,
-            delay: changeCardsProperty[i + 1][step]?.delay,
-          };
-        });
-        setCards(newCards);
-      }
-    };
-
     const interval = setInterval(() => {
       if (steps <= totalSteps) {
-        updateCards(steps);
+        updateCards(steps, true);
         steps++;
       } else {
         clearInterval(interval);
       }
     }, 300);
   };
+  const handleOrder = async (payload) => {
+    const res = await addOrder(payload).unwrap();
 
-  const isPlaceStake = Object.values(stakeState).find((item) => item?.show);
+    if (res?.success) {
+      const winner = res?.winner;
+      const winner_aplus = res?.winner_aplus;
+      const winner_bplus = res?.winner_bplus;
+      const card_a = res?.card_a;
+      const card_b = res?.card_b;
 
-  const isRepeatTheBet = Object.values(stakeState).find(
-    (item) => item?.runner_name && item?.show === false
-  );
+      const calculateWin = calculateTotalWin(
+        winner,
+        winner_aplus,
+        winner_bplus,
+        payload
+      );
+
+      setTimeout(
+        () => {
+          setTimeout(
+            () => {
+              if (calculateWin > 0) {
+                playWinSound();
+              }
+            },
+            isBetFast ? 500 : 3000
+          );
+          setWinCard({
+            winner,
+            winner_aplus,
+            winner_bplus,
+            card_a,
+            card_b,
+          });
+          setShowTotalWinAmount(true);
+          setTotalWinAmount(calculateWin);
+          setMultiplier((calculateWin / totalPlaceBet).toFixed(2));
+          payload = [];
+        },
+        isBetFast ? 0 : 2000
+      );
+      if (isBetFast) {
+        setTimeout(() => {
+          setLoading(false);
+          setShowCard(true);
+        }, 500);
+      }
+      if (isBetFast) {
+        setTimeout(() => {
+          setIsAnimationEnd(true);
+          setShuffle(false);
+          setClear(false);
+        }, 1000);
+      }
+    } else {
+      toast.success(res?.error?.description[0]?.message);
+    }
+  };
+
+  const updateCards = (step, shuffle) => {
+    if (step === 2) {
+      playShuffleSound();
+    }
+
+    if (step === 6) {
+      if (!shuffle) {
+        playCardSound();
+      }
+      setTimeout(() => {
+        if (!shuffle) {
+          setIsAnimationEnd(true);
+        }
+        setLoading(false);
+      }, 3000);
+      setCards(fiftyTwoCard);
+
+      if (!shuffle) {
+        setTimeout(() => {
+          setShowCard(true);
+        }, 100);
+      }
+    } else {
+      const newCards = cards.map((card, i) => {
+        return {
+          ...card,
+          right: changeCardsProperty[i + 1][step]?.right,
+          translateZ: changeCardsProperty[i + 1][step]?.translateZ,
+          delay: changeCardsProperty[i + 1][step]?.delay,
+        };
+      });
+      setCards(newCards);
+    }
+  };
 
   const handleClear = () => {
+    setClear(true);
     setWinCard(initialWinCardState);
     const isAllCardValueOne = Object.values(styleIndex).map((val) => val === 1);
     if (isAllCardValueOne) {
@@ -339,14 +386,20 @@ const Home = () => {
                 />
               </svg>
             </button>
-            <button disabled className="disabled:opacity-50">
+            <button
+              onClick={() => setIsBetFast((prev) => !prev)}
+              disabled={!isPlaceStake}
+              className="disabled:opacity-50"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
                 data-slot="icon"
-                className="w-5 h-5 text-white/50"
+                className={`w-5 h-5 ${
+                  isBetFast ? "text-yellow" : "text-white/50"
+                }`}
               >
                 <path
                   fillRule="evenodd"
@@ -433,11 +486,13 @@ const Home = () => {
             </div>
 
             <FiftyTwoCard
+              clear={clear}
+              shuffle={shuffle}
+              isBetFast={isBetFast}
               totalWinAmount={totalWinAmount}
               multiplier={multiplier}
               isAnimationEnd={isAnimationEnd}
               winCard={winCard}
-              showCardAnimation={showCardAnimation}
               setStyleIndex={setStyleIndex}
               styleIndex={styleIndex}
               showCard={showCard}
@@ -531,6 +586,7 @@ const Home = () => {
           </div>
         </div>
         <Sidebar
+          handleShuffle={handleShuffle}
           loading={loading}
           setStyleIndex={setStyleIndex}
           setShowCard={setShowCard}

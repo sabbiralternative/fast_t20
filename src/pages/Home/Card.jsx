@@ -1,49 +1,199 @@
 import { useEffect } from "react";
-import {
-  playerOneFirstCard,
-  playerOneSecondCard,
-  playerOneThirdCard,
-  playerTwoFirstCard,
-  playerTwoSecondCard,
-  playerTwoThirdCard,
-} from "../../static";
+// import {
+//   playerOneFirstCard,
+//   playerOneSecondCard,
+//   playerOneThirdCard,
+//   playerTwoFirstCard,
+//   playerTwoSecondCard,
+//   playerTwoThirdCard,
+// } from "../../static";
 import { playCardSound } from "../../utils/sound";
 import SingleCard from "./SingleCard";
 
 const Card = ({
   styleIndex,
   setStyleIndex,
-  showCardAnimation,
   winCard,
   isAnimationEnd,
   totalWinAmount,
   multiplier,
+  isBetFast,
+  shuffle,
+  clear,
 }) => {
+  const playerOneFirstCard = [
+    {
+      position: "absolute",
+      right: isBetFast && !shuffle && !clear ? "40%:" : "0%",
+      top: isBetFast && !shuffle && !clear ? "48%:" : "0%",
+      transform: "translateZ(51px) rotateY(0deg)",
+      transformStyle: "preserve-3d",
+    },
+
+    {
+      position: "absolute",
+      right: "75%",
+      top: "40%",
+      transform: "translateZ(51px) rotateY(-180deg)",
+      transformStyle: "preserve-3d",
+    },
+  ];
+
+  const playerTwoFirstCard = [
+    {
+      position: "absolute",
+      transformStyle: "preserve-3d",
+      right: isBetFast && !shuffle && !clear ? "40%:" : "0%",
+      top: isBetFast && !shuffle && !clear ? "48%:" : "0%",
+      transform: "translateZ(51px) rotateY(0deg)",
+    },
+
+    {
+      position: "absolute",
+      right: "30%",
+      top: "40%",
+      transform: "translateZ(52px) rotateY(-180deg)",
+      transformStyle: "preserve-3d",
+    },
+  ];
+
+  const playerOneSecondCard = [
+    {
+      position: "absolute",
+      transformStyle: "preserve-3d",
+      right: isBetFast && !shuffle && !clear ? "40%:" : "0%",
+      top: isBetFast && !shuffle && !clear ? "48%:" : "0%",
+      transform: "translateZ(51px) rotateY(0deg)",
+    },
+
+    {
+      position: "absolute",
+      right: "65%",
+      top: "45%",
+      transform: "translateZ(53px) rotateY(-180deg)",
+      transformStyle: "preserve-3d",
+    },
+  ];
+
+  const playerTwoSecondCard = [
+    {
+      position: "absolute",
+      transformStyle: "preserve-3d",
+      right: isBetFast && !shuffle && !clear ? "40%:" : "0%",
+      top: isBetFast && !shuffle && !clear ? "48%:" : "0%",
+      transform: "translateZ(51px) rotateY(0deg)",
+    },
+
+    {
+      position: "absolute",
+      right: "20%",
+      top: "45%",
+      transform: "translateZ(54px) rotateY(-180deg)",
+      transformStyle: "preserve-3d",
+    },
+  ];
+
+  const playerOneThirdCard = [
+    {
+      position: "absolute",
+      transformStyle: "preserve-3d",
+      right: isBetFast && !shuffle && !clear ? "40%:" : "0%",
+      top: isBetFast && !shuffle && !clear ? "48%:" : "0%",
+      transform: "translateZ(51px) rotateY(0deg)",
+    },
+
+    {
+      position: "absolute",
+      right: "55%",
+      top: "50%",
+      transform: "translateZ(55px) rotateY(-180deg)",
+      transformStyle: "preserve-3d",
+    },
+  ];
+
+  const playerTwoThirdCard = [
+    {
+      position: "absolute",
+      transformStyle: "preserve-3d",
+      right: isBetFast && !shuffle && !clear ? "40%:" : "0%",
+      top: isBetFast && !shuffle && !clear ? "48%:" : "0%",
+      transform: "translateZ(51px) rotateY(0deg)",
+    },
+
+    {
+      position: "absolute",
+      right: "10%",
+      top: "50%",
+      transform: "translateZ(56px) rotateY(-180deg)",
+      transformStyle: "preserve-3d",
+    },
+  ];
+
   const cardSequence = [
-    { key: "playerOneFirstCard", delay: 200, sound: false },
-    { key: "playerTwoFirstCard", delay: 400, sound: true },
-    { key: "playerOneSecondCard", delay: 400, sound: true },
-    { key: "playerTwoSecondCard", delay: 400, sound: true },
-    { key: "playerOneThirdCard", delay: 400, sound: true },
-    { key: "playerTwoThirdCard", delay: 400, sound: true },
+    {
+      key: "playerOneFirstCard",
+      delay: 200,
+      sound: false,
+    },
+    {
+      key: "playerTwoFirstCard",
+      delay: 400,
+      sound: true,
+    },
+    {
+      key: "playerOneSecondCard",
+      delay: 400,
+      sound: true,
+    },
+    {
+      key: "playerTwoSecondCard",
+      delay: 400,
+      sound: true,
+    },
+    {
+      key: "playerOneThirdCard",
+      delay: 400,
+      sound: true,
+    },
+    {
+      key: "playerTwoThirdCard",
+      delay: 400,
+      sound: true,
+    },
   ];
 
   useEffect(() => {
-    if (!showCardAnimation) return;
-
-    for (const { key, delay, sound } of cardSequence) {
-      if (styleIndex?.[key] <= 0) {
+    if (isBetFast) {
+      if (styleIndex?.playerOneFirstCard <= 0) {
         const timer = setTimeout(() => {
-          if (sound) playCardSound();
-          setStyleIndex((prev) => ({
-            ...prev,
-            [key]: prev[key] + 1,
-          }));
-        }, delay);
-        return () => clearTimeout(timer); // exit early after one update
+          setStyleIndex((prev) => {
+            return {
+              playerOneFirstCard: prev.playerOneFirstCard + 1,
+              playerTwoFirstCard: prev.playerTwoFirstCard + 1,
+              playerOneSecondCard: prev.playerOneSecondCard + 1,
+              playerTwoSecondCard: prev.playerTwoSecondCard + 1,
+              playerOneThirdCard: prev.playerOneThirdCard + 1,
+              playerTwoThirdCard: prev.playerTwoThirdCard + 1,
+            };
+          });
+        }, 400);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      for (const { key, delay, sound } of cardSequence) {
+        if (styleIndex?.[key] <= 0) {
+          const timer = setTimeout(() => {
+            if (sound) playCardSound();
+            setStyleIndex((prev) => ({
+              ...prev,
+              [key]: prev[key] + 1,
+            }));
+          }, delay);
+          return () => clearTimeout(timer);
+        }
       }
     }
-  }, [styleIndex, setStyleIndex, showCardAnimation]);
+  }, [styleIndex, setStyleIndex, isBetFast]);
 
   const cardsToRender = [
     {
