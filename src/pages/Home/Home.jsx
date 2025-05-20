@@ -17,6 +17,7 @@ import {
 import toast from "react-hot-toast";
 import { handleUndoStake } from "../../utils/handleUndoStake";
 import { handleDoubleStake } from "../../utils/handleDoubleStake";
+import { useStateContext } from "../../context/ApiProvider";
 
 const Home = () => {
   const [shuffle, setShuffle] = useState(false);
@@ -46,7 +47,8 @@ const Home = () => {
 
   const [multiplier, setMultiplier] = useState(null);
   const [showTotalWinAmount, setShowTotalWinAmount] = useState(false);
-  const [totalWinAmount, setTotalWinAmount] = useState(0);
+  const { totalWinAmount, setTotalWinAmount, setShowTotalWin } =
+    useStateContext();
   const { stake } = useSelector((state) => state.global);
   const [cards, setCards] = useState(fiftyTwoCard);
 
@@ -166,6 +168,7 @@ const Home = () => {
             () => {
               if (calculateWin > 0) {
                 playWinSound();
+                setShowTotalWin(true);
               }
             },
             isBetFast ? 500 : 3000
