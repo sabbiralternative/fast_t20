@@ -5,7 +5,7 @@ import Spade from "./Card/Spade";
 
 const SingleCard = ({ style, card, highlight, player, winCard }) => {
   const borderClass =
-    highlight && player === winCard?.winner ? "border-stakeGreen" : "";
+    highlight && player == winCard?.winner ? "border-stakeGreen" : "";
 
   const getRank = (card) => {
     const removeFirstCharacter = card?.slice(1);

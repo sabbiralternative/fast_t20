@@ -263,6 +263,19 @@ const Card = ({
           </div>
         </div>
       )}
+      {isAnimationEnd && (
+        <span
+          className="absolute z-50 flex items-center justify-center gap-1 px-2 py-1 text-xs font-medium text-black rounded whitespace-nowrap "
+          style={{
+            transform: "translateY(-105%) translateZ(52px) translateX(50%)",
+            right: winCard?.winner === "A" ? "90%" : "30%",
+            top: "40%",
+            backgroundColor: "rgb(0, 231, 0)",
+          }}
+        >
+          {winCard?.winner_method}
+        </span>
+      )}
 
       {cardsToRender.map((card) => (
         <SingleCard
