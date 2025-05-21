@@ -132,7 +132,7 @@ const Home = () => {
       }, 300);
     }
   };
-
+  /* .... */
   const handleShuffle = () => {
     setShuffle(true);
 
