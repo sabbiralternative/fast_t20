@@ -19,6 +19,7 @@ const Header = () => {
       return () => clearTimeout(timeOut);
     }
   }, [setShowTotalWin, showTotalWin]);
+
   return (
     <div className="flex items-center justify-between w-full p-2 text-white shadow-xl bg-black/10">
       <div
