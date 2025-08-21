@@ -156,7 +156,7 @@ const Sidebar = ({
           </span>
         </div>
       </div>
-      <div
+      {/* <div
         id="step-gameParticipants"
         className="flex flex-col w-full gap-2 border rounded border-white/10 bg-black/10"
       >
@@ -3276,7 +3276,7 @@ const Sidebar = ({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

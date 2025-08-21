@@ -13,7 +13,6 @@ const FiftyTwoCard = ({
   isBetFast,
   shuffle,
   clear,
-  multiplier,
 }) => {
   return (
     <>
@@ -128,7 +127,6 @@ const FiftyTwoCard = ({
               clear={clear}
               shuffle={shuffle}
               isBetFast={isBetFast}
-              multiplier={multiplier}
               isAnimationEnd={isAnimationEnd}
               totalWinAmount={totalWinAmount}
               winCard={winCard}

@@ -9,6 +9,7 @@ const ApiProvider = ({ children }) => {
   const [totalWinAmount, setTotalWinAmount] = useState(0);
   const [showTotalWin, setShowTotalWin] = useState(false);
   const [noticeLoaded, setNoticeLoaded] = useState(false);
+  const [isAnimationEnd, setIsAnimationEnd] = useState(false);
 
   const baseUrl = notice?.result?.settings?.baseUrl;
 
@@ -36,6 +37,8 @@ const ApiProvider = ({ children }) => {
     setTotalWinAmount,
     showTotalWin,
     setShowTotalWin,
+    isAnimationEnd,
+    setIsAnimationEnd,
   };
   return (
     <ApiContext.Provider value={stateInfo}>{children}</ApiContext.Provider>

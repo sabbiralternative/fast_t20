@@ -16,7 +16,7 @@ const Card = ({
   winCard,
   isAnimationEnd,
   totalWinAmount,
-  multiplier,
+
   isBetFast,
   shuffle,
   clear,
@@ -242,7 +242,7 @@ const Card = ({
 
   return (
     <>
-      {isAnimationEnd && totalWinAmount !== 0 && (
+      {isAnimationEnd && totalWinAmount > 0 && (
         <div
           style={{
             position: "absolute",
@@ -254,11 +254,7 @@ const Card = ({
         >
           <div className="flex flex-col items-center justify-center font-mono">
             <span className="text-xl font-semibold tracking-tighter text-stakeGreen md:text-3xl">
-              x{multiplier}
-            </span>
-            <div className="w-full h-0.5 bg-white/5" />
-            <span className="text-sm font-semibold tracking-tighter text-stakeGreen/80 md:text-xl">
-              <span>₹{totalWinAmount}</span>
+              ₹{totalWinAmount}
             </span>
           </div>
         </div>
