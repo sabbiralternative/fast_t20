@@ -225,7 +225,7 @@ const Home = () => {
             winner_bplus,
             card_a,
             card_b,
-            winner_method: res?.winner_method,
+            winner_method: res?.result?.winner_method,
           });
           setShowTotalWin(res?.result?.pnl !== 0);
           setShowTotalWinAmount(true);
