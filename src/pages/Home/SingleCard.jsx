@@ -9,6 +9,7 @@ const SingleCard = ({ style, card, highlight, player, winCard }) => {
 
   const getRank = (card) => {
     const removeFirstCharacter = card?.slice(1);
+
     if (removeFirstCharacter == "12") {
       return "Q";
     }
@@ -17,6 +18,9 @@ const SingleCard = ({ style, card, highlight, player, winCard }) => {
     }
     if (removeFirstCharacter == "11") {
       return "J";
+    }
+    if (removeFirstCharacter == "1") {
+      return "A";
     }
     return removeFirstCharacter;
   };

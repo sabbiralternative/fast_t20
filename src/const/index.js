@@ -5,7 +5,7 @@ export const Status = {
 };
 export const Winner = {
   A: "A",
-  B: "",
+  B: "B",
   TIE: "TIE",
 };
 export const WinnerAPlus = {
