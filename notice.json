@@ -7,7 +7,7 @@
     "settings": {
       "siteTitle": "Fast T 20",
       "disabledDevtool": false,
-      "baseUrl": "/fastt20",
+      "baseUrl": "",
       "lobby": "https://aura365.io"
     },
 

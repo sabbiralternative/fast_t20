@@ -1,29 +1,27 @@
 import { useSelector } from "react-redux";
 import { Settings } from "../../api";
-import { useStateContext } from "../../context/ApiProvider";
-import { useEffect } from "react";
+// import { useStateContext } from "../../context/ApiProvider";
+// import { useEffect } from "react";
 import { useAuth } from "../../hooks/auth";
 
 const Header = () => {
   const { mutate: handleAuth } = useAuth();
-  const { totalWinAmount, showTotalWin, setShowTotalWin, isAnimationEnd } =
-    useStateContext();
+  // const { totalWinAmount, showTotalWin, setShowTotalWin, isAnimationEnd } =
+  //   useStateContext();
   const { balance, username, token } = useSelector((state) => state.auth);
   const handleOpenLobby = () => {
     const url = `${Settings.lobby}/${token}`;
     window.location.href = url;
   };
 
-  useEffect(() => {
-    if (showTotalWin && isAnimationEnd) {
-      const timeOut = setTimeout(() => {
-        setShowTotalWin(false);
-      }, 1000);
-      return () => clearTimeout(timeOut);
-    }
-  }, [setShowTotalWin, showTotalWin, isAnimationEnd]);
-
-  console.log(showTotalWin, totalWinAmount);
+  // useEffect(() => {
+  //   if (showTotalWin && isAnimationEnd) {
+  //     const timeOut = setTimeout(() => {
+  //       setShowTotalWin(false);
+  //     }, 1000);
+  //     return () => clearTimeout(timeOut);
+  //   }
+  // }, [setShowTotalWin, showTotalWin, isAnimationEnd]);
 
   return (
     <div className="flex items-center justify-between w-full p-2 text-white shadow-xl bg-black/10">
@@ -134,7 +132,7 @@ const Header = () => {
               <div className="font-medium">
                 <span>₹{balance}</span>
                 <div>
-                  <div
+                  {/* <div
                     className={`absolute right-0 z-50 text-sm font-semibold   -bottom-6 ${
                       showTotalWin && totalWinAmount && isAnimationEnd
                         ? "animate__animated animate__fadeOutUp animate__slow"
@@ -146,7 +144,7 @@ const Header = () => {
                     {totalWinAmount && showTotalWin && isAnimationEnd
                       ? `+${totalWinAmount}`
                       : null}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
